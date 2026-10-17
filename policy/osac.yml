@@ -57,8 +57,10 @@ protected_paths:
 # available) can be waived for one exact commit: an approver comments `/override <full commit sha> <reason>`. The waiver
 # is a check run on that commit naming who and why, which is the audit trail; a new push needs a new one, and the PR's
 # author cannot waive their own PR. It lifts only this protected-path approval, never a failed check or a missing label.
+# The waiver belongs to the CI duty group (ci-duty), not to the approvers above: wg-infra reviews pipeline changes, and
+# ci-duty unblocks merges.
 override:
-  approvers: ["@osac-project/wg-infra"]
+  approvers: ["@osac-project/ci-duty"]
 
 merge:
   required_labels: [lgtm, approved, jira/valid-reference]

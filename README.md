@@ -415,8 +415,11 @@ available) can be waived for one exact commit:
 
 ```yaml
 override:
-  approvers: ["@osac-project/wg-infra"]
+  approvers: ["@osac-project/ci-duty"]
 ```
+
+The override approvers do not have to be the rule's approvers. In `policy/osac.yml` the CI duty group (`ci-duty`)
+waives, while `wg-infra` approves.
 
 An approver comments `/override <full 40-character commit sha> <reason>`, with a reason of 10 to 140 characters (after Unicode normalization and collapsing whitespace) on one
 line. The comment itself is what authorizes: whenever a verdict is computed, the pull request's comments are read and a

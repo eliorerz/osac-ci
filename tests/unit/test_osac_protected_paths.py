@@ -38,8 +38,8 @@ def test_each_change_is_judged_by_exactly_one_rule(osac_policy: Policy) -> None:
         assert sum(rule.covers(file) for rule in osac_policy.protected_paths) == 1, file
 
 
-def test_the_override_is_for_the_group(osac_policy: Policy) -> None:
-    assert osac_policy.override is not None and osac_policy.override.approvers == ("@osac-project/wg-infra",)
+def test_the_override_is_for_ci_duty_not_the_approvers(osac_policy: Policy) -> None:
+    assert osac_policy.override is not None and osac_policy.override.approvers == ("@osac-project/ci-duty",)
 
 
 @pytest.mark.parametrize(
