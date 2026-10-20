@@ -257,7 +257,7 @@ def views() -> tuple[manual_run.SuiteView, ...]:
 
 def test_the_comment_lists_every_suite_with_an_unchecked_box() -> None:
     body = manual_run.render_comment(HEAD, views())
-    assert body.startswith(manual_run.MARKER) and "<details>" in body and "> [!TIP]" in body
+    assert body.startswith(manual_run.MARKER) and "<details>" in body and "## 🚦 CI status" in body
     assert "- [ ] <!-- suite:vmaas --> **VMaaS Full Install** · ✅ passed ([run](https://x/run/1))" in body
     assert manual_run.requested_suites(body) == ()
 
@@ -269,7 +269,9 @@ def test_the_e2e_section_names_both_ways_to_start_and_the_status_comes_first() -
     for part in ("**Who:**", "**How to start a suite:**", "**Good to know:**", "`/test`", "`/test <suite>`", HEAD[:7]):
         assert part in section
     assert "<summary><b>🧪 E2E tests</b> · ✅ 1 passed · ➖ 1 not run · run them now (2 available)</summary>" in section
-    assert max(len(line) for line in body.splitlines() if line.startswith("> ")) < 200  # no wall of text
+    assert (
+        max(len(line) for line in section.split("<sub>")[0].splitlines() if not line.startswith("- [ ]")) < 200
+    )  # no wall of text
 
 
 def test_checked_boxes_are_read_in_order() -> None:
@@ -834,15 +836,15 @@ def block_of(body: str) -> str:
 def test_the_status_block_is_a_list_of_what_the_pull_request_waits_for() -> None:
     block = block_of(manual_run.render_comment(HEAD, views(), "", full_status()))
     assert block.splitlines()[1:] == [
-        "> [!TIP]",
-        "> ## 🚦 CI status",
-        ">",
-        "> - ✅ **Approval:** approved by `alice` on `aaaaaaa`",
-        "> - ✅ **CI:** [passed](https://x/CI)",
-        "> - ✅ **Jira reference:** [passed](https://x/J)",
-        "> - ✅ **E2E:** [Passed: all suites](https://x/e2e)",
-        "> - ✅ **Auto-merge:** on (squash)",
+        "## 🚦 CI status",
+        "",
+        "- ✅ **Approval:** approved by `alice` on `aaaaaaa`",
+        "- ✅ **CI:** [passed](https://x/CI)",
+        "- ✅ **Jira reference:** [passed](https://x/J)",
+        "- ✅ **E2E:** [Passed: all suites](https://x/e2e)",
+        "- ✅ **Auto-merge:** on (squash)",
     ]
+    assert "[!" not in block, "no alert: GitHub would write Tip or Note above the status"
 
 
 def test_each_state_of_the_pull_request_has_its_own_row() -> None:

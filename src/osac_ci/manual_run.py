@@ -141,8 +141,9 @@ def _approval_row(status: PrStatus, sha: str) -> str:
 
 
 def status_block(sha: str, status: PrStatus | None = None) -> list[str]:
-    """The status of the pull request in one alert, between two markers so that it can be refreshed on its own. Rows
-    that do not apply are left out (a check the commit does not have, a draft that is not one)."""
+    """The status of the pull request under a heading, between two markers so that it can be refreshed on its own. Rows
+    that do not apply are left out (a check the commit does not have, a draft that is not one). Not an alert: GitHub
+    would put the word Tip or Note above it."""
     rows: list[str] = []
     if status is None:
         rows = [f"Loading the status of the head commit `{sha[:7]}`..."]
@@ -159,7 +160,7 @@ def status_block(sha: str, status: PrStatus | None = None) -> list[str]:
             rows.append(f"- ✅ **Auto-merge:** on ({status.auto_merge})")
         else:
             rows.append("- ➖ **Auto-merge:** off")
-    return [STATUS_START, *_alert("TIP", ["## 🚦 CI status", "", *rows]), STATUS_END]
+    return [STATUS_START, "## 🚦 CI status", "", *rows, STATUS_END]
 
 
 def suites_summary(views: Sequence[SuiteView]) -> str:
